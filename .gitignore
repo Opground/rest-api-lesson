@@ -162,3 +162,4 @@ cython_debug/
 # git-secret
 .gitsecret/keys/random_seed
 !*.secret
+rest_api_lesson/config/config.json
