@@ -23,30 +23,29 @@ class InfoJobsApi:
     def __init__(self, config: AppConfig) -> None:
         self._config = config
 
-    def get_jobs(self, category_param=None, subcategory_param=None, city_param=None, province_param=None, salaryMin_param=None, salaryMax_param=None, experienceMin_param=None) -> list[JobOffer]:
-        
-        # Constructs URL based on parameters passed and if they are valid
-        parameters = []
+    def get_jobs(self, args) -> list[JobOffer]:
+       
+        # Constructs URL based on parameters passed and if they sare valid
         base_url = "https://api.infojobs.net/api/9/offer"
-        if category_param is not None and self.verify_parameter(category_param, "category"):
-            parameters.append(f"category={category_param}")
-        if subcategory_param is not None and self.verify_parameter(subcategory_param, "subcategory"):
-            parameters.append(f"subcategory={subcategory_param}")
-        if city_param is not None and self.verify_parameter(city_param, "city"):
-            parameters.append(f"city={city_param}")
-        if province_param is not None and self.verify_parameter(province_param, "province"):
-            parameters.append(f"province={province_param}")
-        if salaryMin_param is not None:
-            parameters.append(f"salaryMin={salaryMin_param}")
-        if salaryMax_param is not None:
-            parameters.append(f"salaryMax={salaryMax_param}")
-        if experienceMin_param is not None and self.verify_parameter(experienceMin_param, "experience-min"):
-            parameters.append(f"experienceMin={experienceMin_param}")
-        if parameters:
+        parameters = []
+
+        if hasattr(args, 'category') and args.category is not None and self.verify_parameter(args.category, "category"):
+            parameters.append(f"category={args.category}")
+        if hasattr(args, 'subcategory') and args.subcategory is not None and self.verify_parameter(args.subcategory, "subcategory"):
+            parameters.append(f"subcategory={args.subcategory}")
+        if hasattr(args, 'city') and args.city is not None and self.verify_parameter(args.city, "city"):
+            parameters.append(f"city={args.city}")
+        if hasattr(args, 'province') and args.province is not None and self.verify_parameter(args.province, "province"):
+            parameters.append(f"province={args.province}")
+        if hasattr(args, 'salaryMin') and args.salaryMin is not None:
+            parameters.append(f"salaryMin={args.salaryMin}")
+        if hasattr(args, 'salaryMax') and args.salaryMax is not None:
+            parameters.append(f"salaryMax={args.salaryMax}")
+        if hasattr(args, 'experienceMin') and args.experienceMin is not None and self.verify_parameter(args.experienceMin, "experience-min"):
+            parameters.append(f"experienceMin={args.experienceMin}")
+        if len(parameters) != 0:
             base_url += "?" + parameters[0]
             base_url += "&" + "&".join(parameters[1:])
-        else:
-            raise ValueError
 
         payload = {}
         headers = {
@@ -83,7 +82,7 @@ class InfoJobsApi:
                 
                 # Iterate through each page of job offers
                 current_page += 1
-                if category_param and city_param and province_param and salaryMin_param and salaryMax_param is None:
+                if len(parameters) == 0:
                     param_url = base_url + "?page=" + str(current_page)
                 else:
                     param_url = base_url + "&page=" + str(current_page)
@@ -93,7 +92,7 @@ class InfoJobsApi:
 
             return job_offers
         else:
-            raise ValueError("Status code: {response.status_code}")
+            raise ValueError(f"Status code: {response.status_code}")
 
 
     # Verify parameter by comparing parameter input with dictionary
@@ -113,8 +112,8 @@ class InfoJobsApi:
             for dictionary_entry in dictionary_data:
                 if parameter == dictionary_entry.get('value'):
                     return True
-        
-            return False
+
+            raise ValueError(f"{parameter} is invalid {parameter_type}.")
 
 
 def create_info_jobs_api(log_filename: str = "melanoma_phd.log",
