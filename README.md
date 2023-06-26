@@ -19,6 +19,6 @@ git-secret reveal
 
 - If using Fast API, install fastapi and uvicorn:
 ```bash
-python -m pip install fastapi
-python -m pip install "uvicorn[standard]"
+pip install fastapi
+pip install "uvicorn[standard]"
 ```
