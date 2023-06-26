@@ -12,6 +12,13 @@ if __name__ == "__main__":
     parser.add_argument("--debug_trace", action="store_true", help="print all logging messages")
     parser.add_argument("--no_trace", action="store_true", help="no logging messages")
     parser.add_argument("--log_filename", metavar="log_filename", help="filename of the logs")
+    parser.add_argument("--category", metavar="category", help="category parameter")
+    parser.add_argument("--subcategory", metavar="subcategory", help="subcategory parameter")
+    parser.add_argument("--city", metavar="city", help="city parameter")
+    parser.add_argument("--province", metavar="province", help="province parameter")
+    parser.add_argument("--salaryMin", metavar="salaryMin", help="minimum salary parameter")
+    parser.add_argument("--salaryMax", metavar="salaryMax", help="maximum salary parameter")
+    parser.add_argument("--experienceMin", metavar="experienceMin", help="minimum experience parameter")
     args = parser.parse_args()
 
     debug_trace = args.debug_trace
@@ -20,6 +27,5 @@ if __name__ == "__main__":
     logger_level = logging.CRITICAL if no_trace else logging.DEBUG if debug_trace else logging.INFO
     logger_file = log_filename if log_filename else APP_LOGGING_FILE_NAME
     app = create_info_jobs_api(log_filename=logger_file, log_level=logger_level)
-    app.get_jobs()
-
+    job_offers = app.get_jobs(args)
 
