@@ -17,7 +17,9 @@ class JobOffer:
         self.experienceMin = experienceMin
 
     def __str__(self):
-        return f"Title: {self.title} Location: {self.city}, {self.province} Category: {self.category}"
+        title_truncated = f"{self.title[:35]}..." if len(self.title) > 35 else self.title
+        category_truncated = f"{self.category[:30]}..." if len(self.category) > 30 else self.category
+        return f"Title: {title_truncated:38} Location: {self.city[:15]}, {self.province[:15]} Category: {category_truncated:33}"
 
 class InfoJobsApi:
     def __init__(self, config: AppConfig) -> None:
@@ -29,6 +31,8 @@ class InfoJobsApi:
         base_url = "https://api.infojobs.net/api/9/offer"
         parameters = []
 
+        if hasattr(args, 'keyword') and args.keyword is not None:
+            parameters.append(f"q={args.keyword}")
         if hasattr(args, 'category') and args.category is not None and self.verify_parameter(args.category, "category"):
             parameters.append(f"category={args.category}")
         if hasattr(args, 'subcategory') and args.subcategory is not None and self.verify_parameter(args.subcategory, "subcategory"):
@@ -56,6 +60,7 @@ class InfoJobsApi:
         response = requests.request("GET", base_url, headers=headers, data=payload)
 
         # Check status code
+        response.raise_for_status()
         if response.status_code == 200:
             job_data = response.json()
             
