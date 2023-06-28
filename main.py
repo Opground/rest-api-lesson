@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser.add_argument("--salaryMin", metavar="salaryMin", help="minimum salary parameter")
     parser.add_argument("--salaryMax", metavar="salaryMax", help="maximum salary parameter")
     parser.add_argument("--experienceMin", metavar="experienceMin", help="minimum experience parameter")
+    parser.add_argument("--dummy", action="store_true", help="dummy data parameter")
     args = parser.parse_args()
 
     debug_trace = args.debug_trace
@@ -29,4 +30,6 @@ if __name__ == "__main__":
     logger_file = log_filename if log_filename else APP_LOGGING_FILE_NAME
     app = create_info_jobs_api(log_filename=logger_file, log_level=logger_level)
     job_offers = app.get_jobs(args)
-
+    
+    for job in job_offers:
+        print(job)

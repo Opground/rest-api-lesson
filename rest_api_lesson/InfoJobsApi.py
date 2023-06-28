@@ -3,6 +3,7 @@ from rest_api_lesson.logger.AppLogger import init_logger
 import logging
 import os
 import requests
+import unittest
 
 class JobOffer:
     def __init__(self, title, category, subcategory, city, province, salaryMin, salaryMax, salaryPeriod, experienceMin):
@@ -31,6 +32,8 @@ class InfoJobsApi:
         base_url = "https://api.infojobs.net/api/9/offer"
         parameters = []
 
+        if hasattr(args, 'dummy') and args.dummy is not None:
+            return self.get_dummy_data()
         if hasattr(args, 'keyword') and args.keyword is not None:
             parameters.append(f"q={args.keyword}")
         if hasattr(args, 'category') and args.category is not None and self.verify_parameter(args.category, "category"):
@@ -119,7 +122,14 @@ class InfoJobsApi:
                     return True
 
             raise ValueError(f"{parameter} is invalid {parameter_type}.")
+        
+    def get_dummy_data(self) -> list[JobOffer]:
+        dummy_offer1 = JobOffer("Job Title 1", "Category 1", "Subcategory 1", "City 1", "Province 1", "Minimum Salary 1", "Maximum Salary 1", "Salary Period 1", "Minimum Experience 1")
+        dummy_offer2 = JobOffer("Job Title 2", "Category 2", "Subcategory 2", "City 2", "Province 2", "Minimum Salary 2", "Maximum Salary 2", "Salary Period 2", "Minimum Experience 2")
+        dummy_offer3 = JobOffer("Job Title 3", "Category 3", "Subcategory 3", "City 3", "Province 3", "Minimum Salary 3", "Maximum Salary 3", "Salary Period 3", "Minimum Experience 3")
 
+        return [dummy_offer1, dummy_offer2, dummy_offer3]
+    
 
 def create_info_jobs_api(log_filename: str = "melanoma_phd.log",
     log_level: int = logging.DEBUG,
