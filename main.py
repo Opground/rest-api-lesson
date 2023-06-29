@@ -22,6 +22,7 @@ if __name__ == "__main__":
     parser.add_argument("--experienceMin", metavar="experienceMin", help="minimum experience parameter")
     parser.add_argument("--dummy", action="store_true", help="dummy data parameter")
     args = parser.parse_args()
+    args_dict = vars(args)
 
     debug_trace = args.debug_trace
     no_trace = args.no_trace
@@ -29,7 +30,4 @@ if __name__ == "__main__":
     logger_level = logging.CRITICAL if no_trace else logging.DEBUG if debug_trace else logging.INFO
     logger_file = log_filename if log_filename else APP_LOGGING_FILE_NAME
     app = create_info_jobs_api(log_filename=logger_file, log_level=logger_level)
-    job_offers = app.get_jobs(args)
-    
-    for job in job_offers:
-        print(job)
+    job_offers = app.get_jobs(args_dict)

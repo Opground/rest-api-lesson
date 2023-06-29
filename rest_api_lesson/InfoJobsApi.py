@@ -1,9 +1,9 @@
 from rest_api_lesson.config.AppConfig import AppConfig, create_config
 from rest_api_lesson.logger.AppLogger import init_logger
+from typing import Dict
 import logging
 import os
 import requests
-import unittest
 
 class JobOffer:
     def __init__(self, title, category, subcategory, city, province, salaryMin, salaryMax, salaryPeriod, experienceMin):
@@ -26,30 +26,30 @@ class InfoJobsApi:
     def __init__(self, config: AppConfig) -> None:
         self._config = config
 
-    def get_jobs(self, args) -> list[JobOffer]:
+    def get_jobs(self, args: Dict) -> list[JobOffer]:
        
         # Constructs URL based on parameters passed and if they sare valid
         base_url = "https://api.infojobs.net/api/9/offer"
         parameters = []
 
-        if hasattr(args, 'dummy') and args.dummy is not None:
+        if 'dummy' in args and args['dummy'] is True:
             return self.get_dummy_data()
-        if hasattr(args, 'keyword') and args.keyword is not None:
-            parameters.append(f"q={args.keyword}")
-        if hasattr(args, 'category') and args.category is not None and self.verify_parameter(args.category, "category"):
-            parameters.append(f"category={args.category}")
-        if hasattr(args, 'subcategory') and args.subcategory is not None and self.verify_parameter(args.subcategory, "subcategory"):
-            parameters.append(f"subcategory={args.subcategory}")
-        if hasattr(args, 'city') and args.city is not None and self.verify_parameter(args.city, "city"):
-            parameters.append(f"city={args.city}")
-        if hasattr(args, 'province') and args.province is not None and self.verify_parameter(args.province, "province"):
-            parameters.append(f"province={args.province}")
-        if hasattr(args, 'salaryMin') and args.salaryMin is not None:
-            parameters.append(f"salaryMin={args.salaryMin}")
-        if hasattr(args, 'salaryMax') and args.salaryMax is not None:
-            parameters.append(f"salaryMax={args.salaryMax}")
-        if hasattr(args, 'experienceMin') and args.experienceMin is not None and self.verify_parameter(args.experienceMin, "experience-min"):
-            parameters.append(f"experienceMin={args.experienceMin}")
+        if 'keyword' in args and args['keyword'] is not None:
+            parameters.append(f"q={args['keyword']}")
+        if 'category' in args and args['category'] is not None and self.verify_parameter(args['category'], "category"):
+            parameters.append(f"category={args['category']}")
+        if 'subcategory' in args and args['subcategory'] is not None and self.verify_parameter(args['subcategory'], "subcategory"):
+            parameters.append(f"subcategory={args['subcategory']}")
+        if 'city' in args and args['city'] is not None and self.verify_parameter(args['city'], "city"):
+            parameters.append(f"city={args['city']}")
+        if 'province' in args and args['province'] is not None and self.verify_parameter(args['province'], "province"):
+            parameters.append(f"province={args['province']}")
+        if 'salaryMin' in args and args['salaryMin'] is not None:
+            parameters.append(f"salaryMin={args['salaryMin']}")
+        if 'salaryMax' in args and args['salaryMax'] is not None:
+            parameters.append(f"salaryMax={args['salaryMax']}")
+        if 'experienceMin' in args and args['experienceMin'] is not None and self.verify_parameter(args.experienceMin, "experience-min"):
+            parameters.append(f"experienceMin={args['experienceMin']}")
         if len(parameters) != 0:
             base_url += "?" + parameters[0]
             base_url += "&" + "&".join(parameters[1:])
@@ -131,7 +131,7 @@ class InfoJobsApi:
         return [dummy_offer1, dummy_offer2, dummy_offer3]
     
 
-def create_info_jobs_api(log_filename: str = "melanoma_phd.log",
+def create_info_jobs_api(log_filename: str = "rest_api_lesson.log",
     log_level: int = logging.DEBUG,
     data_folder: str = None) -> InfoJobsApi:
     config = create_config(data_folder)
